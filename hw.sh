@@ -4,10 +4,11 @@ vm1_name='alpine1'
 vm2_name='alpine2'
 
 storage_name='mystorage.vdi'
-storage_name2='mystorage2.vdi'
+#storage_name2='mystorage2.vdi'
 
 path=${PWD}
 
+#iso_linux='lubuntu-21.10-desktop-amd64.iso'
 iso_linux='alpine-standard-3.13.5-x86.iso'
 
 port=12345
@@ -18,7 +19,7 @@ echo ISO Linux path ${path}/${iso_linux}
 function create_storage {
 	echo "Creating Storage"
 	VBoxManage createhd --filename ${path}/${storage_name} --size 80000 --format VDI                     
-	VBoxManage createhd --filename ${path}/${storage_name2} --size 80000 --format VDI                     
+	#VBoxManage createhd --filename ${path}/${storage_name2} --size 80000 --format VDI                     
 	echo "Storage was created sucessfully"
 }
 
@@ -34,10 +35,10 @@ function create_vm1 {
 
 
 	echo "Conneting VM ${vm1_name} to CD ISO"
-	VBoxManage storagectl ${vm1_name} --name "SATA Controller 1" --add sata --controller IntelAhci       
-	VBoxManage storageattach ${vm1_name} --storagectl "SATA Controller 1" --port 0 --device 0 --type hdd --medium  ${path}/${storage_name}                
-	VBoxManage storagectl ${vm1_name} --name "IDE Controller 1" --add ide --controller PIIX4       
-	VBoxManage storageattach ${vm1_name} --storagectl "IDE Controller 1" --port 1 --device 0 --type dvddrive --medium ${path}/${iso_linux}      
+	VBoxManage storagectl ${vm1_name} --name "SATA Controller ${vm1_name}" --add sata --controller IntelAhci       
+	VBoxManage storageattach ${vm1_name} --storagectl "SATA Controller ${vm1_name}" --port 0 --device 0 --type hdd --medium  ${path}/${storage_name}                
+	VBoxManage storagectl ${vm1_name} --name "IDE Controller ${vm1_name}" --add ide --controller PIIX4       
+	VBoxManage storageattach ${vm1_name} --storagectl "IDE Controller ${vm1_name}" --port 1 --device 0 --type dvddrive --medium ${path}/${iso_linux}      
 	VBoxManage modifyvm ${vm1_name} --boot1 dvd --boot2 disk --boot3 none --boot4 none 
 
 	echo "Setting RDP access for the VM ${vm1_name}"
@@ -63,10 +64,10 @@ function create_vm2 {
 
 
 	echo "Conneting VM ${vm2_name} to CD ISO"
-	VBoxManage storagectl ${vm2_name} --name "SATA Controller 2" --add sata --controller IntelAhci       
-	VBoxManage storageattach ${vm2_name} --storagectl "SATA Controller 2" --port 0 --device 0 --type hdd --medium  ${path}/${storage_name2}                
-	VBoxManage storagectl ${vm2_name} --name "IDE Controller 2" --add ide --controller PIIX4       
-	VBoxManage storageattach ${vm2_name} --storagectl "IDE Controller 2" --port 1 --device 0 --type dvddrive --medium ${path}/${iso_linux}      
+	VBoxManage storagectl ${vm2_name} --name "SATA Controller ${vm2_name}" --add sata --controller IntelAhci       
+	VBoxManage storageattach ${vm2_name} --storagectl "SATA Controller ${vm2_name}" --port 0 --device 0 --type hdd --medium  ${path}/${storage_name}                
+	VBoxManage storagectl ${vm2_name} --name "IDE Controller ${vm2_name}" --add ide --controller PIIX4       
+	VBoxManage storageattach ${vm2_name} --storagectl "IDE Controller ${vm2_name}" --port 1 --device 0 --type dvddrive --medium ${path}/${iso_linux}      
 	VBoxManage modifyvm ${vm2_name} --boot1 dvd --boot2 disk --boot3 none --boot4 none 
 
 	echo "Setting RDP access for the VM ${vm2_name}"
@@ -140,25 +141,21 @@ function metrics {
 }
 
 
-echo $command_input
-
-#create_storage
-#create_vm1
-#create_vm2
-
-#activate_livemigration #setup live migration
-
-#run_vms
-
-#livemigration
-
-#listvms
-
-#metrics
 
 
+
+create_storage
+
+create_vm1
+
+create_vm2
+
+
+activate_livemigration
+
+run_vms
+
+sleep 5
 poweroffvms
 destroyvms
-
-
 
